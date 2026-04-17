@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AIIT .SUPPORT - Print Ready Vertical Business Card</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+  /* Reset */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: #f8fafc;
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 40px;
+    color: #1a1b26;
+  }
+
+  .instructions {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    max-width: 600px;
+    border: 1px solid #e2e8f0;
+  }
+  .instructions h2 { margin-bottom: 12px; font-weight: 600; }
+  .instructions p { margin-bottom: 16px; line-height: 1.5; color: #475569; }
+  .instructions ol { margin-left: 24px; line-height: 1.6; color: #334155; }
+  .instructions span.highlight { background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+
+  @media print {
+    body { background-color: #1a1b26; padding: 0; display: block; }
+    .instructions { display: none; }
+    
+    /* 2 x 3.5 final size, plus 0.125" bleed on all sides = 2.25 x 3.75 */
+    @page { 
+      size: 2.25in 3.75in; 
+      margin: 0; 
+    }
+  }
+
+  /* Card Canvas */
+  .card {
+    width: 2.25in;
+    height: 3.75in;
+    background-color: #1c1917; /* Dark Stone */
+    color: #f8fafc;
+    position: relative;
+    overflow: hidden;
+    
+    /* Crucial for printing dark backgrounds from browsers */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    
+    display: flex;
+    flex-direction: column;
+    
+    /* Preview drop shadow */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    page-break-after: always;
+  }
+
+  /* The Bleed Guide (1/8th inch edge) 
+     All important text must stay INSIDE the safe zone. */
+  .safe-zone {
+    position: absolute;
+    top: 0.125in;
+    left: 0.125in;
+    right: 0.125in;
+    bottom: 0.125in;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+  }
+
+  /* QR Code Styling */
+  .qr-code {
+    border-radius: 4px;
+  }
+  
+  /* Subtle QR code on the front - stays absolute */
+  .qr-front {
+    position: absolute;
+    width: 2.25in;
+    height: 2.25in;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.06; /* Increased visibility (50% brighter than 0.04) */
+    z-index: 1;
+    filter: invert(1) brightness(2);
+  }
+
+  /* Back QR Code - Flex item, centered horizontally */
+  .qr-back {
+    width: 1.1in;
+    height: 1.1in;
+    align-self: center; /* Horizontally centers in the column flex safe-zone */
+  }
+
+  /* --- FRONT SIDE --- */
+  .front .safe-zone {
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .front-brand {
+    text-align: center;
+    z-index: 10;
+  }
+
+  .logo-mark {
+    font-size: 26pt;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .mark-cyan {
+    color: #2dd4bf;
+  }
+
+  .cyan-char {
+    color: #2dd4bf !important;
+  }
+  
+  .logo-sub {
+    font-size: 6pt;
+    font-weight: 400;
+    letter-spacing: 5px;
+    color: #a8a29e;
+    text-transform: uppercase;
+  }
+  
+  /* Abstract Tech/AI Motif */
+  .motif {
+    position: absolute;
+    bottom: -0.5in;
+    right: -0.5in;
+    width: 2in;
+    height: 2in;
+    border: 1px solid rgba(45, 212, 191, 0.1);
+    border-radius: 50%;
+    z-index: 1;
+  }
+  .motif::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    border: 1px dashed rgba(45, 212, 191, 0.2);
+    border-radius: 50%;
+  }
+
+  /* --- BACK SIDE --- */
+  .back {
+    background-color: #ffffff;
+    color: #1c1917;
+  }
+  
+  .back .safe-zone {
+    justify-content: space-between;
+    padding: 0.2in 0.15in;
+    align-items: center; /* Horizontally center all blocks */
+    text-align: center; /* Center align text inside blocks */
+  }
+  
+  .motif.flipped {
+    top: -0.7in;
+    left: -0.7in;
+    right: auto;
+    bottom: auto;
+  }
+
+  .name-block {
+    margin-top: 0;
+  }
+  
+  .name {
+    font-size: 15pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  
+  .title {
+    font-size: 7.5pt;
+    color: #2dd4bf; /* Teal */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .tagline {
+    font-size: 5.5pt;
+    color: #1c1917;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 2px;
+    display: block;
+    opacity: 0.8;
+  }
+
+  .contact-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.08in;
+    margin-bottom: 0.1in;
+    align-items: center; /* Center contact items horizontally */
+  }
+  
+  .contact-item {
+    font-size: 7.5pt;
+    font-weight: 300;
+    color: #1c1917;
+    display: flex;
+    align-items: center;
+    gap: 0.06in;
+    letter-spacing: 0;
+  }
+  
+  .contact-item svg {
+    width: 0.12in;
+    height: 0.12in;
+    fill: #2dd4bf;
+  }
+  
+  .location-marker {
+    font-size: 6pt;
+    color: #1c1917;
+    margin-top: 0.1in;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="instructions">
+    <h2>Print-Ready Vertical Business Card</h2>
+    <p>This version center-aligns all text on the back and updates the coloring of 'Tibbitts'.</p>
+  </div>
+
+  <!-- BACK -->
+  <div class="card back">
+    
+    <div class="safe-zone">
+      <div class="name-block">
+        <div class="name">Ke<span class="cyan-char">it</span>h Tibb<span class="cyan-char">it</span>ts</div>
+        <div class="title"><span class="cyan-char">AI</span> Consult<span class="cyan-char">a</span>nt</div>
+        <div class="tagline"><span class="cyan-char">A</span>ppl<span class="cyan-char">i</span>ed <span class="cyan-char">A</span>utom<span class="cyan-char">a</span>t<span class="cyan-char">i</span>on Expert</div>
+      </div>
+
+      <!-- Centered QR Code -->
+      <img class="qr-code qr-back" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3ATibbitts%3BKeith%3B%3B%3B%0AFN%3AKeith%20Tibbitts%0AORG%3AAIIT.SUPPORT%0ATITLE%3AAI%20Consultant%0ATEL%3BTYPE%3DWORK%2CVOICE%3A323-364-4408%0AEMAIL%3Akeith%40aiit.support%0AURL%3Ahttps%3A%2F%2Fwww.aiit.support%0AEND%3AVCARD" alt="Contact QR Code (vCard)">
+      
+      <div class="contact-block">
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M20,4H4C2.9,4,2.01,4.9,2.01,6L2,18c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,18H4V8l8,5l8-5V18z M12,11L4,6h16L12,11z"/></svg>
+          <span>ke<span class="cyan-char">it</span>h@<span class="cyan-char">ai</span>it.support</span>
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M20.01,15.38c-1.23,0-2.42-0.2-3.53-0.56c-0.35-0.12-0.74-0.03-1.01,0.24l-1.57,1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c0.27-0.28,0.35-0.67,0.24-1.02c-0.37-1.11-0.56-2.3-0.56-3.53c0-0.55-0.45-1-1-1H4.19C3.65,3,3,3.24,3,3.99C3,13.28,10.73,21,20.01,21c0.71,0,0.99-0.63,0.99-1.18v-3.45C21,15.82,20.56,15.38,20.01,15.38z"/></svg>
+          <span>323-364-4408</span>
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M11.99,2C6.47,2,2,6.48,2,12s4.47,10,9.99,10C17.52,22,22,17.52,22,12S17.52,2,11.99,2z M18.92,8h-2.95c-0.32-1.25-0.78-2.45-1.38-3.56C16.43,5.07,17.96,6.35,18.92,8z M12,4.04c0.83,1.2,1.48,2.53,1.91,3.96h-3.82C10.52,6.57,11.17,5.24,12,4.04z M4.26,14C4.1,13.36,4,12.69,4,12s0.1-1.36,0.26-2h3.38c-0.08,0.66-0.14,1.32-0.14,2s0.06,1.34,0.14,2H4.26z M5.08,16h2.95c0.32,1.25,0.78,2.45,1.38,3.56C7.57,18.93,6.04,17.65,5.08,16z M8.03,8H5.08c0.96-1.66,2.49-2.93,4.33-3.56C8.81,5.55,8.35,6.75,8.03,8z M12,19.96c-0.83-1.2-1.48-2.53-1.91-3.96h3.82C13.48,17.43,12.83,18.76,12,19.96z M14.34,14H9.66c-0.09-0.66-0.16-1.32-0.16-2s0.07-1.35,0.16-2h4.68c0.09,0.65,0.16,1.31,0.16,2S14.43,13.34,14.34,14z M14.59,19.56c0.6-1.11,1.06-2.31,1.38-3.56h2.95C17.96,17.65,16.43,18.93,14.59,19.56z M16.36,14c0.08-0.66,0.14-1.32,0.14-2s-0.06-1.34-0.14-2h3.38c0.16,0.64,0.26,1.31,0.26,2s-0.1,1.36-0.26,2H16.36z"/></svg>
+          <span><span class="cyan-char">ai</span>it.support</span>
+        </div>
+        
+        <div class="location-marker">Los <span class="cyan-char">A</span>ngeles, C<span class="cyan-char">A</span></div>
+      </div>
+      
+    </div>
+  </div>
+
+</body>
+</html>

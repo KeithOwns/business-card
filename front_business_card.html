@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AIIT .SUPPORT - Print Ready Vertical Business Card</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+  /* Reset */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: #f8fafc;
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 40px;
+    color: #1a1b26;
+  }
+
+  .instructions {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    max-width: 600px;
+    border: 1px solid #e2e8f0;
+  }
+  .instructions h2 { margin-bottom: 12px; font-weight: 600; }
+  .instructions p { margin-bottom: 16px; line-height: 1.5; color: #475569; }
+  .instructions ol { margin-left: 24px; line-height: 1.6; color: #334155; }
+  .instructions span.highlight { background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+
+  @media print {
+    body { background-color: #1a1b26; padding: 0; display: block; }
+    .instructions { display: none; }
+    
+    /* 2 x 3.5 final size, plus 0.125" bleed on all sides = 2.25 x 3.75 */
+    @page { 
+      size: 2.25in 3.75in; 
+      margin: 0; 
+    }
+  }
+
+  /* Card Canvas */
+  .card {
+    width: 2.25in;
+    height: 3.75in;
+    background-color: #1c1917; /* Dark Stone */
+    color: #f8fafc;
+    position: relative;
+    overflow: hidden;
+    
+    /* Crucial for printing dark backgrounds from browsers */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    
+    display: flex;
+    flex-direction: column;
+    
+    /* Preview drop shadow */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    page-break-after: always;
+  }
+
+  /* The Bleed Guide (1/8th inch edge) 
+     All important text must stay INSIDE the safe zone. */
+  .safe-zone {
+    position: absolute;
+    top: 0.125in;
+    left: 0.125in;
+    right: 0.125in;
+    bottom: 0.125in;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+  }
+
+  /* QR Code Styling */
+  .qr-code {
+    border-radius: 4px;
+  }
+  
+  /* Subtle QR code on the front - stays absolute */
+  .qr-front {
+    position: absolute;
+    width: 2.25in;
+    height: 2.25in;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.06; /* Increased visibility (50% brighter than 0.04) */
+    z-index: 1;
+    filter: invert(1) brightness(2);
+  }
+
+  /* Back QR Code - Flex item, centered horizontally */
+  .qr-back {
+    width: 1.1in;
+    height: 1.1in;
+    align-self: center; /* Horizontally centers in the column flex safe-zone */
+  }
+
+  /* --- FRONT SIDE --- */
+  .front .safe-zone {
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .front-brand {
+    text-align: center;
+    z-index: 10;
+  }
+
+  .logo-mark {
+    font-size: 26pt;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .mark-cyan {
+    color: #2dd4bf;
+  }
+
+  .cyan-char {
+    color: #2dd4bf !important;
+  }
+  
+  .logo-sub {
+    font-size: 6pt;
+    font-weight: 400;
+    letter-spacing: 5px;
+    color: #a8a29e;
+    text-transform: uppercase;
+  }
+  
+  /* Abstract Tech/AI Motif */
+  .motif {
+    position: absolute;
+    bottom: -0.5in;
+    right: -0.5in;
+    width: 2in;
+    height: 2in;
+    border: 1px solid rgba(45, 212, 191, 0.1);
+    border-radius: 50%;
+    z-index: 1;
+  }
+  .motif::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    border: 1px dashed rgba(45, 212, 191, 0.2);
+    border-radius: 50%;
+  }
+
+  /* --- BACK SIDE --- */
+  .back {
+    background-color: #ffffff;
+    color: #1c1917;
+  }
+  
+  .back .safe-zone {
+    justify-content: space-between;
+    padding: 0.2in 0.15in;
+    align-items: center; /* Horizontally center all blocks */
+    text-align: center; /* Center align text inside blocks */
+  }
+  
+  .motif.flipped {
+    top: -0.7in;
+    left: -0.7in;
+    right: auto;
+    bottom: auto;
+  }
+
+  .name-block {
+    margin-top: 0;
+  }
+  
+  .name {
+    font-size: 15pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  
+  .title {
+    font-size: 7.5pt;
+    color: #2dd4bf; /* Teal */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .tagline {
+    font-size: 5.5pt;
+    color: #1c1917;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 2px;
+    display: block;
+    opacity: 0.8;
+  }
+
+  .contact-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.08in;
+    margin-bottom: 0.1in;
+    align-items: center; /* Center contact items horizontally */
+  }
+  
+  .contact-item {
+    font-size: 7.5pt;
+    font-weight: 300;
+    color: #1c1917;
+    display: flex;
+    align-items: center;
+    gap: 0.06in;
+    letter-spacing: 0;
+  }
+  
+  .contact-item svg {
+    width: 0.12in;
+    height: 0.12in;
+    fill: #2dd4bf;
+  }
+  
+  .location-marker {
+    font-size: 6pt;
+    color: #1c1917;
+    margin-top: 0.1in;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="instructions">
+    <h2>Print-Ready Vertical Business Card</h2>
+    <p>This version center-aligns all text on the back and updates the coloring of 'Tibbitts'.</p>
+  </div>
+
+  <!-- FRONT -->
+  <div class="card front">
+    <img class="qr-code qr-front" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://www.aiit.support/%23contact" alt="Subtle QR Gloss">
+    <div class="safe-zone">
+      <div class="front-brand">
+        <div class="logo-mark"><span class="mark-cyan">AI</span>IT.</div>
+        <div class="logo-sub">SUPPORT</div>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>
